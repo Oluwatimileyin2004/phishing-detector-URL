@@ -159,7 +159,22 @@ This project was created for educational, research, and cybersecurity learning p
 ## Future Goals
 
 My goal is to continue refining this project by adding machine learning classification models, threat-intelligence API integrations, and an interactive interface.
+import requests
 
+KNOWN_SHORTENERS = ["bit.ly", "tinyurl.com", "t.co", "is.gd", "goo.gl", "ow.ly"]
+
+def unshorten_url(url):
+    """Traces HTTP redirects to extract the final landing URL."""
+    try:
+        # Use HEAD request so we don't download the entire web page body
+        response = requests.head(url, allow_redirects=True, timeout=5)
+        final_url = response.url
+        
+        if final_url != url:
+            return final_url, f"⚠️ Shortened URL detected! Resolved to: {final_url}"
+        return url, "No URL shortener detected."
+    except requests.RequestException:
+        return url, "Could not follow redirect (Connection failed)."
 ## Author
 
 **Oguntola Timileyin Emmanuel**  
